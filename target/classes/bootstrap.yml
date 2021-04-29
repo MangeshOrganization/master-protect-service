@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: MasterProtectApplication
+  profiles:
+    active: git
+  cloud:
+    config:
+      failFast: true
+      server:
+        bootstrap: true
+        git:
+          uri: https://github.com/MangeshOrganization/ConfigServer.git
+          default-label: main
