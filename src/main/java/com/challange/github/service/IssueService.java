@@ -42,7 +42,7 @@ public class IssueService {
 	public Response create(Repository repository, String body) {
 
 		Issue issue = new Issue();
-		body = "@" + repository.getOwner().getLogin() + " Following Branch Protection has been added to main \n`" + body +"`";
+		body = "@" + repository.getOwner().getLogin() + " Following Branch Protection has been added to Default Branch \n`" + body +"`";
 		issue.setBody(body);
 		issue.setTitle("Main Branch Protection Applied - Review");
 		issue.setLabels(Arrays.asList("BranchProtection"));
@@ -55,9 +55,6 @@ public class IssueService {
 
 		try {
 			String issueJSon = Obj.writeValueAsString(issue);
-			System.out.println("URL :" + url);
-
-			System.out.println("Request Body :" + issueJSon);
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("User-Agent", "Spring's RestTemplate");

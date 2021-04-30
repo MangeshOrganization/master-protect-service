@@ -43,21 +43,15 @@ public class BranchProtectionService {
 
 	public Response protect(Repository repository) {
 		
-		String url = gitHubBaseURL+"repos/"+repository.getFull_name()+"/branches/main/protection";
+		String url = gitHubBaseURL+"repos/"+repository.getFull_name()+"/branches/"+repository.getDefault_branch()+"/protection";
 		
         ObjectMapper Obj = new ObjectMapper();
         ResponseEntity<String> response = null;
         
         Protection prt = buildProtection();
-        
-        
-
-        
+          
         try {
 			String body = Obj.writeValueAsString(prt);
-			System.out.println("URL :" + url);
-
-			System.out.println("Request Body :" + body);
 			
 			
 		    HttpHeaders headers = new HttpHeaders();

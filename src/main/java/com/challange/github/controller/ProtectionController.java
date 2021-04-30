@@ -66,7 +66,6 @@ public class ProtectionController {
 		}
 		
 		return response;
-		
 	}
 
 }
