@@ -3,6 +3,7 @@
 # Table of Content
 * [Overview](#Overview)
 * [Libraries /Services / Frameworks](#Libraries)
+* [Design and Overall Flow] (#Design)
 * [Setup and Usage](#setup)
 * [Future Considerations](#future)
 * [Issues Encountered](#issues)
@@ -24,6 +25,8 @@ This Service Runs in AWS ECS Fargate Container Platform inside docker container.
 * Docker - Container Build
 * GitHub Actions - Basic CI/CD 
 * AWS ECS - Container Hosting
+
+## <a name="Design"/> Design and Overall Flow
 
 ## <a name="setup"/> Setup and Usage
 
