@@ -220,6 +220,10 @@ You will need to have following  Resources handy before trying it out.
 
 
 ## <a name="future"/> Future Considerations
+1. The CD Portion of the AWS infrastructure can be automated to avoid all the manual steps.
+2. All the Services enabling this usecase can be individual loosely coupled microservices in themselves.
+3. Config Server can be totally seperated from the Main Spring Boot app.
+
 
 ## <a name="issues"/> Issues Encountered
 
