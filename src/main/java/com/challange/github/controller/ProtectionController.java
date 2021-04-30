@@ -28,14 +28,14 @@ import com.challange.github.service.IssueService;
  * Has Basic Error Handling - Can be improvised
  */
 @RestController
-@RequestMapping(value = "/api/repo/")
+@RequestMapping()
 
 public class ProtectionController {
 	@Autowired BranchProtectionService protectionService;
 	
 	@Autowired IssueService issueService;
 	
-	@RequestMapping(value = "/protection",
+	@RequestMapping(
 	        produces = { "application/json" }, 
 	        consumes = { "application/json" },
 	        method = RequestMethod.POST)
