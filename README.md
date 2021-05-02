@@ -103,7 +103,7 @@ You will need to have following  Resources handy before trying it out.
   ```
   {"status":"UP"}
   ```
-   In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
+    In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
   5. Now Go to the https://github.com/organizations/{YourOrgName}/settings/hooks/new 
       * Enter Payload URL as {LOAD BALANCER DNS URL}:8080.
       * Enter Content-Type as application/json.
