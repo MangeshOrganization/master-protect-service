@@ -67,7 +67,6 @@ You will need to have following  Resources handy before trying it out.
 2. Configure your AWS Account's AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY [Make sure they are not Root User Tokens ] as part of GitHub Repository Secrets. 
 #### Spin up the Service
   
- ##### Setup
  1. Create ECR Repo
       * Run following Command from AWS CLI
  ```
