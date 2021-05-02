@@ -100,7 +100,7 @@ You will need to have following  Resources handy before trying it out.
   ```
   {"status":"UP"}
   ```
-  5. Now Go to the https://github.com/organizations/<YourOrgName>/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
+  5. Now Go to the https://github.com/organizations/{YourOrgName}/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
       * Enter Payload URL as {LOAD BALANCER DNS URL}:8080.
       * Enter Content-Type as application/json.
       * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
