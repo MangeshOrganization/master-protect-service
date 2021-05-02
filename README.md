@@ -75,34 +75,37 @@ You will need to have following  Resources handy before trying it out.
  ```
  2. Create ECS Cluster
     * Update and Push master-protect-cloud-formation.yaml with following parameters values.
-     1. VPC - Fetch your Default VPC Id from AWS Console 
-     2. SubnetA - Fetch your Public subnet 1 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
-     3. SubnetB - Fetch your Public subnet 2 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
-     4. Image - ARN of my-ecr-repo/master-protect-service:latest which is created in Step 1.
-     5. GitHubToken - ARN of the GIT_TOKEN Parameter created in the Configuration Setup Step.
-    * Run master-protect-cloud-formation.yaml  Cloud Formation Stack from AWS CLI. 
-    This will create all the necessary AWS Resources for your Service 
-  ``` 
-  mangesh@Mangeshs-MacBook-Air master-protect-service % aws cloudformation create-stack --stack-name GitGubECSCluster --template-body file://master-protect-cloud-formation.yaml --capabilities CAPABILITY_NAMED_IAM
-{
-    "StackId": "arn:aws:cloudformation:ap-southeast-2:102455416451:stack/GitGubECSCluster/fab99740-ab12-11eb-a289-02806d445c90"
-}
+      1.  VPC - Fetch your Default VPC Id from AWS Console 
+      2.  SubnetA - Fetch your Public subnet 1 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
+      3.  SubnetB - Fetch your Public subnet 2 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
+      4.  Image - ARN of my-ecr-repo/master-protect-service:latest which is created in Step 1.
+      5.  GitHubToken - ARN of the GIT_TOKEN Parameter created in the Configuration Setup Step.
+    * Run master-protect-cloud-formation.yaml  Cloud Formation Stack from AWS CLI.
+      This will create all the necessary AWS Resources for your Service 
+         ``` 
+         mangesh@Mangeshs-MacBook-Air master-protect-service % aws cloudformation create-stack --stack-name GitGubECSCluster --template-body file://master-protect-cloud-formation.yaml --capabilities CAPABILITY_NAMED_IAM
+       {
+           "StackId": "arn:aws:cloudformation:ap-southeast-2:102455416451:stack/GitGubECSCluster/fab99740-ab12-11eb-a289-02806d445c90"
+       }
 
-  ```
-  * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your {LOAD BALANCER DNS URL} (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
+         ```
+
+    * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your {LOAD BALANCER DNS URL} (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
+
   3. Create the New Relase from your master-protect-service repository
-  * This basically will trigger [ Build & Deploy] GitHub Action which builds Docker Image and then pushes the Service Image to the ECR Repository Created in the Setup Steps.
-  * Check if the Git Hub Action Build & Deploy is successful.
+     * This basically will trigger [ Build & Deploy] GitHub Action which builds Docker Image and then pushes the Service Image to the ECR Repository Created in the Setup Steps.
+     * Check if the Git Hub Action Build & Deploy is successful.
   4. Open the Web Browser and Paste {LOAD BALANCER DNS URL}:8080/actuator/health. If you get following then Your Service is up and running !!
   In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
   ```
   {"status":"UP"}
   ```
   5. Now Go to the https://github.com/organizations/<YourOrgName>/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
-  * Enter Payload URL as {LOAD BALANCER DNS URL}:8080
-  * Enter Content-Type as application/json
-  * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
-  * Click Add Webhook - This Should basically send all the Repo Related Actions to Your Master Protect Service.
+      * Enter Payload URL as {LOAD BALANCER DNS URL}:8080.
+      * Enter Content-Type as application/json.
+      * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
+      * Click Add Webhook - This Should basically send all the Repo Related Actions to Your Master Protect Service.
+
 
 ## <a name="action"/> See It in Action
 
