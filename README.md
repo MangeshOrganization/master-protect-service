@@ -114,6 +114,28 @@ You will need to have following  Resources handy before trying it out.
 ## <a name="action"/> See It in Action
 
 ### Brand New Repo Protection with Default Rules.
+<details>
+ <summary> Default Branch Protection Rules</summary>
+ protection:
+  required_status_checks:
+    strict: true
+    contexts: []
+  enforce_admins: true
+  required_pull_request_reviews:
+    dismissal_restrictions:
+      users: []
+      teams: []
+    dismiss_stale_reviews: false
+    require_code_owner_reviews: true
+    required_approving_review_count: 1
+  restrictions:
+    users: []
+    teams: []
+    apps: []
+  required_linear_history: true
+  allow_force_pushes: false
+  allow_deletions: false
+ </details>
 1. Create a Brand New Public Repository in your Organization ( Via API or Web ) (in order to get a branch, you need a commit! Make sure to initialize with a README)
 2. Navigate to your Repository --> Settings --> Branches , Check if it has Branch Protection Rules Applied - As shown in the Sample below.
 ![image](https://user-images.githubusercontent.com/2278604/116807898-0cdaf200-ab79-11eb-92b1-e922692adc7f.png)
