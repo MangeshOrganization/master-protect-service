@@ -28,6 +28,9 @@ This Service Runs in AWS ECS Fargate Container Platform inside docker container.
 * AWS ECS - Container Hosting
 
 ## <a name="Design"/> Overall Flow
+
+![image](https://user-images.githubusercontent.com/2278604/116823471-07f15f00-abc8-11eb-98b6-8a4db2b44c9a.png)
+
 ### Components
 1. Master Protect Service 
  A Spring Boot Container Running in AWS ECS.
