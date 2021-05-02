@@ -95,15 +95,16 @@ You will need to have following  Resources handy before trying it out.
 
     * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your {LOAD BALANCER DNS URL} (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
 
-  3. Create the New Relase from your master-protect-service repository
+  3. Create the New Release from your master-protect-service repository
      * This basically will trigger [ Build & Deploy] GitHub Action which builds Docker Image and then pushes the Service Image to the ECR Repository Created in the Setup Steps.
      * Check if the Git Hub Action Build & Deploy is successful.
   4. Open the Web Browser and Paste {LOAD BALANCER DNS URL}:8080/actuator/health. If you get following then Your Service is up and running !!
-  In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
+ 
   ```
   {"status":"UP"}
   ```
-  5. Now Go to the https://github.com/organizations/{YourOrgName}/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
+   In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
+  5. Now Go to the https://github.com/organizations/{YourOrgName}/settings/hooks/new 
       * Enter Payload URL as {LOAD BALANCER DNS URL}:8080.
       * Enter Content-Type as application/json.
       * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
@@ -116,7 +117,7 @@ You will need to have following  Resources handy before trying it out.
 1. Create a Brand New Public Repository in your Organization ( Via API or Web ) (in order to get a branch, you need a commit! Make sure to initialize with a README)
 2. Navigate to your Repository --> Settings --> Branches , Check if it has Branch Protection Rules Applied - As shown in the Sample below.
 ![image](https://user-images.githubusercontent.com/2278604/116807898-0cdaf200-ab79-11eb-92b1-e922692adc7f.png)
-3. Navidate to your Repository-->Issues , Check if It has new Issue Created with jSon payload of Branch Protection Rules Applied . - As shown in the Sample Below.
+3. Navigate to your Repository-->Issues , Check if It has new Issue Created with jSon payload of Branch Protection Rules Applied . - As shown in the Sample Below.
 ![image](https://user-images.githubusercontent.com/2278604/116807939-62af9a00-ab79-11eb-88bb-aa3965649c46.png)
 
 ### Brand New Repo Protection with Configurable Rules.
