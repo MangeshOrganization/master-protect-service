@@ -1,10 +1,11 @@
 # master-protect-service
 
-# Table of Content
+## Table of Contents
 * [Overview](#Overview)
 * [Libraries /Services / Frameworks](#Libraries)
-* [Design and Overall Flow] (#Design)
-* [Setup and Usage](#setup)
+* [Overall Flow] (#Design)
+* [Setup](#setup)
+* [See It in Action](#action)
 * [Future Considerations](#future)
 * [Issues Encountered](#issues)
 * [References](References)
@@ -26,11 +27,24 @@ This Service Runs in AWS ECS Fargate Container Platform inside docker container.
 * GitHub Actions - Basic CI/CD 
 * AWS ECS - Container Hosting
 
-## <a name="Design"/> Design and Overall Flow
+## <a name="Design"/> Overall Flow
+### Components
+1. Master Protect Service 
+ A Spring Boot Container Running in AWS ECS.
+2. Config Server
+ A Spring Cloud Config Server (Embedded). This is integrated with Config Server Git Repo for Application Configuration.
+3. GitHub WebHook / APIs
 
-## <a name="setup"/> Setup and Usage
+### Brief Working
+* GitHub Org Webhook is Configured to send the Event Payload for Any Actions performed on the Org Repositories.
+* The Master Protect Service Listens on to those Events and Handles the Events of type "created"
+* On Receipt of the Repository Creation Events , Master Protect Service Uses [Branch Protection GitHub API](https://docs.github.com/en/rest/reference/repos) to Apply the Branch Protection . The Rules Applied are build by fetching the configuration from Config Server.
+* Upon Successful Creation of the Branch Protection , The Master Protect Service then Utilizes [GitHub Issues API](https://docs.github.com/en/rest/reference/issues) to Create the Issue mentioning the Repository Owner with JSON representing the Branch Protection Rules Applied on the Repository.
 
-### Pre-requisites
+
+## <a name="setup"/> Setup
+
+## Pre-requisites
 You will need to have following  Resources handy before trying it out.
  * GitHub Account
  * GitHub Organization
@@ -76,22 +90,23 @@ You will need to have following  Resources handy before trying it out.
 }
 
   ```
-  * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your <LOAD BALANCER DNS URL> (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
+  * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your {LOAD BALANCER DNS URL} (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
   3. Create the New Relase from your master-protect-service repository
   * This basically will trigger [ Build & Deploy] GitHub Action which builds Docker Image and then pushes the Service Image to the ECR Repository Created in the Setup Steps.
   * Check if the Git Hub Action Build & Deploy is successful.
-  4. Open the Web Browser and Paste <LOAD BALANCER DNS URL>:8080/actuator/health. If you get following then Your Service is up and running !!
+  4. Open the Web Browser and Paste {LOAD BALANCER DNS URL}:8080/actuator/health. If you get following then Your Service is up and running !!
   In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
   ```
   {"status":"UP"}
   ```
   5. Now Go to the https://github.com/organizations/<YourOrgName>/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
-  * Enter Payload URL as <LOAD BALANCER DNS URL>:8080
+  * Enter Payload URL as {LOAD BALANCER DNS URL}:8080
   * Enter Content-Type as application/json
   * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
   * Click Add Webhook - This Should basically send all the Repo Related Actions to Your Master Protect Service.
 
-### See it in Action
+## <a name="action"/> See It in Action
+
 ### Brand New Repo Protection with Default Rules.
 1. Create a Brand New Public Repository in your Organization ( Via API or Web ) (in order to get a branch, you need a commit! Make sure to initialize with a README)
 2. Navigate to your Repository --> Settings --> Branches , Check if it has Branch Protection Rules Applied - As shown in the Sample below.
@@ -112,10 +127,10 @@ You will need to have following  Resources handy before trying it out.
 
 
 ## <a name="issues"/> Issues Encountered
-###### Spring Boot - Spring Cloud Integration
- Initially I started with latest version of Spring Boot and Cloud - However the Integrated Boot and Config Server does not seem to work (That feature is broken), Hence I had to switch back to lower version of Spring Boot and Cloud.
-###### Initially I had the Service with Path based Listening to the WebHook, However I realised that Organization Webhooks do not deliver to Path Based URLs- I did not have time to understand why , Hence swithced the Service to get away with relative Path.
-###### Had Some issues while Integrating with Branch Protection and Issue Creation GitHub APIs for valid Accept Headers, The Preview notices helped to source correct values for each API.
+1. Spring Boot - Spring Cloud Integration
+ * Initially I started with latest version of Spring Boot and Cloud - However the Integrated Boot and Config Server does not seem to work (That feature is broken), Hence I had to switch back to lower version of Spring Boot and Cloud.
+2.  Initially I had the Service with Path based Listening to the WebHook, However I realised that Organization Webhooks do not deliver to Path Based URLs- I did not have time to understand why , Hence swithced the Service to get away with relative Path.
+3.  Had Some issues while Integrating with Branch Protection and Issue Creation GitHub APIs for valid Accept Headers, The Preview notices helped to source correct values for each API.
  
 
 ## <a name="References"/> References
