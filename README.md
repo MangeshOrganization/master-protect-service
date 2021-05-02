@@ -116,6 +116,7 @@ You will need to have following  Resources handy before trying it out.
 ### Brand New Repo Protection with Default Rules.
 <details>
  <summary> Default Branch Protection Rules</summary>
+ 
  ``` 
  protection:
   required_status_checks:
@@ -123,7 +124,7 @@ You will need to have following  Resources handy before trying it out.
     contexts: []
   enforce_admins: true
   required_pull_request_reviews:
-    dismissal_restrictions:
+    dismissal_restrictions: 
       users: []
       teams: []
     dismiss_stale_reviews: false
@@ -136,6 +137,7 @@ You will need to have following  Resources handy before trying it out.
   required_linear_history: true
   allow_force_pushes: false
   allow_deletions: false
+  
  ```
 </details>
 
