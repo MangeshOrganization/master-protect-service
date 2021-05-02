@@ -3,7 +3,7 @@
 ## Table of Contents
 * [Overview](#Overview)
 * [Libraries /Services / Frameworks](#Libraries)
-* [Overall Flow] (#Design)
+* [Overall Flow](#Design)
 * [Setup](#setup)
 * [See It in Action](#action)
 * [Future Considerations](#future)
