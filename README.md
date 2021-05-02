@@ -120,8 +120,8 @@ You will need to have following  Resources handy before trying it out.
 3. Now Follow the Steps in the "Brand New Repo Protection with Default Rules" to check if the Rules which You have configured are reflected in your Brand new Repository .
 
 ## <a name="future"/> Future Considerations
-1. The CD Portion - Build & Deploy Step is derived form [GitHub Action](https://github.com/actions/starter-workflows) , However It has some updates to just push the image to latest tag , It can be improvised further to align with it totally - So that for any subsequent code updates , one need not manually update the service.
-2. All the Services enabling this usecase can be individual loosely coupled microservices in themselves.
+1. The CD Portion - Build & Deploy Step is derived form [GitHub Action Template](https://github.com/actions/starter-workflows) , However It has some updates to just push the image to latest tag , It can be improvised further to align with template totally - So that for any subsequent code updates , one need not manually update the service.
+2. All the Services enabling this usecase can be "individual loosely coupled microservices" in themselves.
 3. With the time constraint - This service does not have test cases implemented - Those need to be implemented.
 4. Config Server can be totally seperated from the Main Spring Boot app.
 
