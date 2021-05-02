@@ -40,33 +40,35 @@ You will need to have following  Resources handy before trying it out.
  * AWS CLI Setup [reference](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
 ### Repository Setup
 1. Fork following repositories [reference](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo)
-[master-protect-service](https://github.com/MangeshOrganization/master-protect-service)
-[ConfigServer](https://github.com/MangeshOrganization/ConfigServer)
-2. Update main/src/main/resources/bootstrap.yml under your forked master-protect-service to point to your ConfigServer.
-3. 
+* [master-protect-service](https://github.com/MangeshOrganization/master-protect-service)
+* [ConfigServer](https://github.com/MangeshOrganization/ConfigServer)
+2. Update and Push main/src/main/resources/bootstrap.yml under your forked master-protect-service to point to your ConfigServer.
+
 ### Wiring It up 
-#### AWS Configuration Sertup
+#### Configuration Setup
 1. Get you Git Hub Personal Access Token and Add it as part of the AWS SSM Parameter called "GIT_TOKEN" - This will be served to the Service Runtime as part of the Environment variable for accessing GitHub APIs.
 
 ![image](https://user-images.githubusercontent.com/2278604/116749112-cc2d8c80-aa43-11eb-8b42-a11430730661.png)
 
 2. Configure your AWS Account's AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY [Make sure they are not Root User Tokens ] as part of GitHub Repository Secrets. 
-3. Spin up the ECS Cluster 
-  ##### Pre-Requisite
-  * VPCID - Fetch your Default VPC Id from AWS Console 
-  * SubnetA - Fetch your Public subnet 1 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
-  * SubnetB - Fetch your Public subnet 2 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
+#### Spin up the Service
   
  ##### Setup
  1. Create ECR Repo
- Run following Command from AWS CLI
+      * Run following Command from AWS CLI
  ```
  mangesh@Mangeshs-MacBook-Air master-protect-service % aws ecr create-repository --repository-name my-ecr-repo/master-protect-service
 
  ```
  2. Create ECS Cluster
- Run master-protect-cloud-formation.yaml  Cloud Formation Stack from AWS CLI. 
- This will create all the necessary AWS Resources for your Service 
+    * Update and Push master-protect-cloud-formation.yaml with following parameters values.
+     1. VPC - Fetch your Default VPC Id from AWS Console 
+     2. SubnetA - Fetch your Public subnet 1 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
+     3. SubnetB - Fetch your Public subnet 2 ID from AWS Subnet Console- Please make sure this Subnet is associated with Default VPC
+     4. Image - ARN of my-ecr-repo/master-protect-service:latest which is created in Step 1.
+     5. GitHubToken - ARN of the GIT_TOKEN Parameter created in the Configuration Setup Step.
+    * Run master-protect-cloud-formation.yaml  Cloud Formation Stack from AWS CLI. 
+    This will create all the necessary AWS Resources for your Service 
   ``` 
   mangesh@Mangeshs-MacBook-Air master-protect-service % aws cloudformation create-stack --stack-name GitGubECSCluster --template-body file://master-protect-cloud-formation.yaml --capabilities CAPABILITY_NAMED_IAM
 {
@@ -74,12 +76,50 @@ You will need to have following  Resources handy before trying it out.
 }
 
   ```
+  * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your <LOAD BALANCER DNS URL> (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
+  3. Create the New Relase from your master-protect-service repository
+  * This basically will trigger [ Build & Deploy] GitHub Action which builds Docker Image and then pushes the Service Image to the ECR Repository Created in the Setup Steps.
+  * Check if the Git Hub Action Build & Deploy is successful.
+  4. Open the Web Browser and Paste <LOAD BALANCER DNS URL>:8080/actuator/health. If you get following then Your Service is up and running !!
+  In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
+  ```
+  {"status":"UP"}
+  ```
+  5. Now Go to the https://github.com/organizations/<YourOrgName>/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
+  * Enter Payload URL as <LOAD BALANCER DNS URL>:8080
+  * Enter Content-Type as application/json
+  * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
+  * Click Add Webhook - This Should basically send all the Repo Related Actions to Your Master Protect Service.
+
+### See it in Action
+### Brand New Repo Protection with Default Rules.
+1. Create a Brand New Public Repository in your Organization ( Via API or Web ) (in order to get a branch, you need a commit! Make sure to initialize with a README)
+2. Navigate to your Repository --> Settings --> Branches , Check if it has Branch Protection Rules Applied - As shown in the Sample below.
+![image](https://user-images.githubusercontent.com/2278604/116807898-0cdaf200-ab79-11eb-92b1-e922692adc7f.png)
+3. Navidate to your Repository-->Issues , Check if It has new Issue Created with jSon payload of Branch Protection Rules Applied . - As shown in the Sample Below.
+![image](https://user-images.githubusercontent.com/2278604/116807939-62af9a00-ab79-11eb-88bb-aa3965649c46.png)
+
+### Brand New Repo Protection with Configurable Rules.
+1. Update and Push https://github.com/<YOUR_ORG>/ConfigServer/blob/main/MasterProtectApplication.yml to have any of the desired Protection Rules Added/Updated.
+2. Just Restart the ECS Service Provisioned as part of the AWS ( This can be automated as well ).
+3. Now Follow the Steps in the "Brand New Repo Protection with Default Rules" to check if the Rules which You have configured are reflected in your Brand new Repository .
+
 ## <a name="future"/> Future Considerations
-1. The CD Portion of the AWS infrastructure can be automated to avoid all the manual steps.
+1. The CD Portion - Build & Deploy Step is derived form [GitHub Action](https://github.com/actions/starter-workflows) , However It has some updates to just push the image to latest tag , It can be improvised further to align with it totally - So that for any subsequent code updates , one need not manually update the service.
 2. All the Services enabling this usecase can be individual loosely coupled microservices in themselves.
-3. Config Server can be totally seperated from the Main Spring Boot app.
+3. With the time constraint - This service does not have test cases implemented - Those need to be implemented.
+4. Config Server can be totally seperated from the Main Spring Boot app.
 
 
 ## <a name="issues"/> Issues Encountered
+###### Spring Boot - Spring Cloud Integration
+ Initially I started with latest version of Spring Boot and Cloud - However the Integrated Boot and Config Server does not seem to work (That feature is broken), Hence I had to switch back to lower version of Spring Boot and Cloud.
+###### Initially I had the Service with Path based Listening to the WebHook, However I realised that Organization Webhooks do not deliver to Path Based URLs- I did not have time to understand why , Hence swithced the Service to get away with relative Path.
+###### Had Some issues while Integrating with Branch Protection and Issue Creation GitHub APIs for valid Accept Headers, The Preview notices helped to source correct values for each API.
+ 
 
 ## <a name="References"/> References
+* Issues API -- https://docs.github.com/en/rest/reference/issues
+* Branch Protection API -- https://docs.github.com/en/rest/reference/repos
+* GitHub Action for AWS Deployment - https://github.com/actions/starter-workflows
+
