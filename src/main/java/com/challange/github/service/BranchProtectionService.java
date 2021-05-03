@@ -61,7 +61,7 @@ public class BranchProtectionService {
 		    
 		    HttpEntity entity = new HttpEntity(body, headers);
 		    
-		    response = restTemplate.exchange(
+		    response = getRestTemplate().exchange(
 		            url,
 		            HttpMethod.PUT,
 		            entity,
@@ -89,7 +89,7 @@ public class BranchProtectionService {
 	//Nasty Jackson Exception while deserializing prompted me to create copy of Protection Object here - Mainly because
     // of the way Interceptor Classes are bound by Spring Boot while building @Configuration Objects
     
-	private Protection buildProtection() {
+	public Protection buildProtection() {
 		Protection p = new Protection();
 		
 		p.setAllowDeletions(protection.getAllowDeletions());
@@ -102,5 +102,13 @@ public class BranchProtectionService {
 		
 		return p;
 
+	}
+
+	public RestTemplate getRestTemplate() {
+		return restTemplate;
+	}
+
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
 	}
 }
