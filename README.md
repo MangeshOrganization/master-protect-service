@@ -28,6 +28,9 @@ This Service Runs in AWS ECS Fargate Container Platform inside docker container.
 * AWS ECS - Container Hosting
 
 ## <a name="Design"/> Overall Flow
+
+![image](https://user-images.githubusercontent.com/2278604/116823471-07f15f00-abc8-11eb-98b6-8a4db2b44c9a.png)
+
 ### Components
 1. Master Protect Service 
  A Spring Boot Container Running in AWS ECS.
@@ -92,15 +95,16 @@ You will need to have following  Resources handy before trying it out.
 
     * Take a Note of the EndPoint Parameter Created as part of Cloud Formation Stack Execution, This is your {LOAD BALANCER DNS URL} (AWS Cosole --> CloudFormation --> Stacks --> GitGubECSCluster -->Outputs)
 
-  3. Create the New Relase from your master-protect-service repository
+  3. Create the New Release from your master-protect-service repository
      * This basically will trigger [ Build & Deploy] GitHub Action which builds Docker Image and then pushes the Service Image to the ECR Repository Created in the Setup Steps.
      * Check if the Git Hub Action Build & Deploy is successful.
   4. Open the Web Browser and Paste {LOAD BALANCER DNS URL}:8080/actuator/health. If you get following then Your Service is up and running !!
-  In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
+ 
   ```
   {"status":"UP"}
   ```
-  5. Now Go to the https://github.com/organizations/{YourOrgName}/settings/hooks/new [ Alternatively this can be done using GitHub API Call - Its not part of the Scope]
+    In case you dont see it running , You might want to check the ECS Task Logs under Cloud Watch or Just Restart the Service from AWS ECS Console.
+  5. Now Go to the https://github.com/organizations/{YourOrgName}/settings/hooks/new 
       * Enter Payload URL as {LOAD BALANCER DNS URL}:8080.
       * Enter Content-Type as application/json.
       * Choose Event using "Let me choose individual events" with just selecting "Repositories" Check Box.
@@ -110,10 +114,37 @@ You will need to have following  Resources handy before trying it out.
 ## <a name="action"/> See It in Action
 
 ### Brand New Repo Protection with Default Rules.
+<details>
+ <summary> Default Branch Protection Rules</summary>
+ 
+ ``` 
+ protection:
+  required_status_checks:
+    strict: true
+    contexts: []
+  enforce_admins: true
+  required_pull_request_reviews:
+    dismissal_restrictions: 
+      users: []
+      teams: []
+    dismiss_stale_reviews: false
+    require_code_owner_reviews: true
+    required_approving_review_count: 1
+  restrictions:
+    users: []
+    teams: []
+    apps: []
+  required_linear_history: true
+  allow_force_pushes: false
+  allow_deletions: false
+  
+ ```
+</details>
+
 1. Create a Brand New Public Repository in your Organization ( Via API or Web ) (in order to get a branch, you need a commit! Make sure to initialize with a README)
 2. Navigate to your Repository --> Settings --> Branches , Check if it has Branch Protection Rules Applied - As shown in the Sample below.
 ![image](https://user-images.githubusercontent.com/2278604/116807898-0cdaf200-ab79-11eb-92b1-e922692adc7f.png)
-3. Navidate to your Repository-->Issues , Check if It has new Issue Created with jSon payload of Branch Protection Rules Applied . - As shown in the Sample Below.
+3. Navigate to your Repository-->Issues , Check if It has new Issue Created with jSon payload of Branch Protection Rules Applied . - As shown in the Sample Below.
 ![image](https://user-images.githubusercontent.com/2278604/116807939-62af9a00-ab79-11eb-88bb-aa3965649c46.png)
 
 ### Brand New Repo Protection with Configurable Rules.
